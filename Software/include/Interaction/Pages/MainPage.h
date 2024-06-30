@@ -13,6 +13,9 @@ Label labelTickets;
 Label labelSession;
 Progressbar pbarSession;
 Bitmap bmpTicket;
+Bitmap bmpSession;
+
+uint16_t ticketCount = 10;
 
 public:
     void OnLoad() override;
