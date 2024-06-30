@@ -40,7 +40,7 @@ class PageComponent
 
     public:
 
-    void SetVisible(bool v);
+    void SetVisible(bool v, bool update = true);
     bool IsVisible();
 
     void SetParentPage(Page* _page);
@@ -61,6 +61,7 @@ public:
     void Show();
     void Close();
     bool IsShown();
+    void ToggleAllVisible(bool v, bool update = true);
 
     virtual void OnLoad() = 0;
     virtual void OnExit() = 0;

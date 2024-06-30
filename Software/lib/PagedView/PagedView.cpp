@@ -51,6 +51,17 @@ namespace PagedView
 
 // --- PAGE  ---
 
+void Page::ToggleAllVisible(bool v, bool update = true)
+{
+  for (int i = 0; i < this->componentsCount; i++)
+  {
+    PageComponent *comp = this->components[i];
+    comp->SetVisible(v, false);
+  }
+
+  if (update) this->DrawIfShown();
+}
+
 void Page::Close()
 {
   if (PagedView::GetCurrentPage() == this)
@@ -99,10 +110,12 @@ void Page::AddComponent(PageComponent *component)
 
 // --- PAGE COMPONENT ---
 
-void PageComponent::SetVisible(bool v)
+void PageComponent::SetVisible(bool v, bool update)
 {
   this->visible = v;
-  // TODO: redraw if activee page
+  
+  if(update && this->parentPage != nullptr)
+  this->parentPage->DrawIfShown();
 }
 
 bool PageComponent::IsVisible()

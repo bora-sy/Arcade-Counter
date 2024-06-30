@@ -6,17 +6,13 @@
 #include "Interaction/Components/Bitmap.h"
 #include "Interaction/Bitmaps/Ticket.h"
 
-class MainPage : public Page
+class StartupPage : public Page
 {
 private:
 Label labelInfo;
-Label labelTickets;
-Label labelSession;
-Progressbar pbarSession;
-Bitmap bmpTicket;
-Bitmap bmpSession;
 
-uint16_t ticketCount = 10;
+void ShowInfo(String info);
+void ClearInfo();
 
 public:
     void OnLoad() override;
@@ -24,8 +20,5 @@ public:
     void OnInput(BtnInput input) override;
     void Periodic() override;
 
-    void ShowInfo(String info);
-    void ClearInfo();
-
-    MainPage();
+    StartupPage();
 };
