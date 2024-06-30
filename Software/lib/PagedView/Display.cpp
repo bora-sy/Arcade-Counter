@@ -104,6 +104,22 @@ namespace Display
     {
         DrawText(p.ToPoint(displaySize), text, textSize, color, anchor, update);
     }
+
+
+    void DrawBitmap(Point p, const uint8_t* bitmap, Size size, Color color, RelativePoint anchor, bool update)
+    {
+
+        Point offset = anchor.ToPoint(size);
+        Point pos = p - offset;
+        display.drawBitmap(pos.x, pos.y, bitmap, size.width, size.height, color);
+        if (update)
+            Update();
+    }
+
+    void DrawBitmap(RelativePoint rp, const uint8_t* bitmap, Size size, Color color,RelativePoint anchor, bool update)
+    {
+        DrawBitmap(rp.ToPoint(displaySize), bitmap, size, color, anchor, update);
+    }
 }
 
 // SIZE

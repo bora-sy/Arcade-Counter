@@ -20,14 +20,15 @@ void MainPage::Periodic()
     
 }
 
+
 MainPage::MainPage()
 {
 
+    this->labelTickets = Label(RelativePoint(0.5,0.5), "10", 3, Color::White, RelativePoint(1, 0.5));
+    this->bmpTicket = Bitmap(RelativePoint(0.5, 0.5), Bitmap_TICKET, Size_TICKET, Color::White, RelativePoint(0, 0.5));
     this->labelSession = Label(RelativePoint(0.5,0.05), "Session Ends In: 10m", 1, Color::White, RelativePoint(0.5, 0));
-    this->labelTickets = Label(RelativePoint(0.5,0.5), "10", 3, Color::White, RelativePoint(0.5, 0.5));
     this->pbarSession = Progressbar(RelativePoint(0, 0.95), RelativeSize(1, 0.05), Color::White, 128, 128);
-    
+
     this->AddComponent(&labelTickets);
-    this->AddComponent(&labelSession);
-    this->AddComponent(&pbarSession);
+    this->AddComponent(&bmpTicket);
 }

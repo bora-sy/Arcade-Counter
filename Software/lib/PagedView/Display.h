@@ -103,6 +103,7 @@ namespace Display
     
     void DrawText(RelativePoint p, String text, uint8_t textSize, Color color, RelativePoint anchor, bool update = false);
 
-
+    void DrawBitmap(Point p, const uint8_t* bitmap, Size size, Color color, RelativePoint anchor, bool update = false);
+    void DrawBitmap(RelativePoint rp, const uint8_t* bitmap, Size size, Color color, RelativePoint anchor, bool update = false);
 
 }
