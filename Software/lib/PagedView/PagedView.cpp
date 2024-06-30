@@ -51,7 +51,7 @@ namespace PagedView
 
 // --- PAGE  ---
 
-void Page::ToggleAllVisible(bool v, bool update = true)
+void Page::ToggleAllVisible(bool v, bool update)
 {
   for (int i = 0; i < this->componentsCount; i++)
   {
