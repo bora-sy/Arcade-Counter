@@ -36,7 +36,6 @@ Label::Label(RelativePoint _rp, String _text, uint8_t _textSize, Color _color, R
 
 void Label::UpdateText(String _text, bool draw)
 {
-    Serial.printf("Updating label (parent: %d)\n", (int)this->parentPage);
     this->text = _text;
     
     if(draw)

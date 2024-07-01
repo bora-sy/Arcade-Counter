@@ -23,7 +23,6 @@ namespace Display
     void Update()
     {
         display.display();
-        Serial.println("Disp updated");
     }
 
     void Clear(bool update)

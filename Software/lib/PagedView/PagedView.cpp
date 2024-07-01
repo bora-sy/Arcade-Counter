@@ -89,7 +89,6 @@ void Page::DrawIfShown()
 {
   if (!this->IsShown())
   {
-    Serial.println("Not shown");
     return;
   }
 
