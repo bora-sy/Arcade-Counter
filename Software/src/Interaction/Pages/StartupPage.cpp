@@ -23,12 +23,9 @@ void SetupAP()
     WiFi.mode(WIFI_AP);
     WiFi.softAPConfig(IPAddress(192, 168, 1, 1), IPAddress(192, 168, 1, 1), IPAddress(255, 255, 255, 0));
     WiFi.softAP(ap_ssid, ap_password);
-    hostnameSuc = WiFi.setHostname(hostname);
     IPAddr = WiFi.softAPIP();
     Serial.println("Switched to AP Mode");
-
     Disp("(AP Mode)\nWaiting for\nconnection...\n\nSSID: " + String(ap_ssid) + "\nPASSWORD: " + String(ap_password), 1);
-
     while(WiFi.softAPgetStationNum() == 0) delay(100);
 
     Disp("STA\nConnected",2);
@@ -39,6 +36,7 @@ void SetupSTA()
 {
     WiFi.mode(WIFI_STA);
     
+    hostnameSuc = WiFi.setHostname(hostname);
     wl_status_t status = WiFi.begin(Config::Network.SSID, Config::Network.Password);
     String cnctowifi = "Connecting\nto WiFi";
     
@@ -48,7 +46,7 @@ void SetupSTA()
 
     Serial.print("Connecting to WiFi");
 
-    int timeoutRemaining = 10;
+    int timeoutRemaining = 40;
     int doti = 0;
 
     while (status != WL_CONNECTED && timeoutRemaining > 0)
@@ -62,7 +60,6 @@ void SetupSTA()
 
     if(status == WL_CONNECTED)
     {
-        hostnameSuc = WiFi.setHostname(hostname);
         IPAddr = WiFi.localIP();
         Serial.println("\nConnected to WiFi");
         Disp("Connected", 2);
@@ -72,6 +69,7 @@ void SetupSTA()
     {
         Serial.println("\nFailed to connect to WiFi, switching to AP mode");
         Disp("Connection\nFailed\nSwitching\nTo AP Mode");
+        WiFi.disconnect(true);
         delay(3000);
         SetupAP();
     }
@@ -85,7 +83,11 @@ void SetupConfigServer()
     if(!Config::networkInit || !Config::userInit)
     {
         Serial.printf("Hostname suc: %d", hostnameSuc);
-        Disp("-Missing Config-\n\nGo to\n\n" + String(hostname) + "\nor\nhttp://" + IPAddr.toString() + "/", 1);
+
+
+        String hostnameString = !hostnameSuc ? "" : String(hostname) + "\nor\n"; 
+
+        Disp("-Missing Config-\n\nGo to\n\n" + hostnameString + "http://" + IPAddr.toString() + "/", 1);
         while (true)
         {
             WebServer::Periodic();
@@ -99,6 +101,7 @@ void SetupConfigServer()
 
 void Startup()
 {
+    // TODO: Fix hostname
       
     Serial.printf("Config init suc: %d\n", Config::Initialize());
     Serial.printf("Network: (SSID: %s) (PW: %s)\n", (char*)Config::Network.SSID, (char*)Config::Network.Password);

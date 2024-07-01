@@ -32,6 +32,24 @@ namespace WebServer
         Serial.printf("Userconfig set suc: %d\n", suc);
         
         server.send(suc ? 200 : 500, "text/plain", suc ? "1" : "0");
+    }    
+    
+    void GetNetworkConfig()
+    {
+        char buf[128];
+        
+        sprintf(buf, "{\"ssid\":\"%s\",\"password\":\"%s\"}", Config::Network.SSID, Config::Network.Password);
+
+        server.send(200, "application/json", buf);
+    }
+
+    void GetUserConfig()
+    {
+        char buf[128];
+        
+        sprintf(buf, "{\"slackmemberid\":\"%s\",\"userairtableid\":\"%s\"}", Config::User.SlackMemberID, Config::User.UserAirtableID);
+
+        server.send(200, "application/json", buf);
     }
 
     void restart()
@@ -48,6 +66,8 @@ namespace WebServer
         server.on("/", HTTP_GET, mainPage);
         server.on("/api/config/network", HTTP_POST, SetNetworkConfig);
         server.on("/api/config/user", HTTP_POST, SetUserConfig);
+        server.on("/api/config/network", HTTP_GET, GetNetworkConfig);
+        server.on("/api/config/user", HTTP_GET, GetUserConfig);
         server.on("/api/restart", HTTP_POST, restart);
     }
 
