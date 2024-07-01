@@ -2,29 +2,31 @@
 
 namespace Config
 {
+    bool networkInit = false;
+    bool userInit = false;
+
     NetworkConfig Network;
     UserConfig User; 
 
     bool InitializeNetwork()
     {
         if (!DataSaving::FileExists(CONFIGFILE_NETWORK))
-            return false;
+            return true;
         uint16_t configsize = sizeof(Network);
-        return DataSaving::ReadData(CONFIGFILE_NETWORK, (uint8_t *)&Network, configsize) == configsize;
+        return (networkInit = (DataSaving::ReadData(CONFIGFILE_NETWORK, (uint8_t *)&Network, configsize) == configsize));
     }
 
     bool InitializeUser()
     {
         if (!DataSaving::FileExists(CONFIGFILE_USER))
-            return false;
+            return true;
         uint16_t configsize = sizeof(User);
-        return DataSaving::ReadData(CONFIGFILE_USER, (uint8_t *)&User, configsize) == configsize;
+        return (userInit = (DataSaving::ReadData(CONFIGFILE_USER, (uint8_t *)&User, configsize) == configsize));
     }
 
     bool Initialize()
     {
-        if (!DataSaving::Initialize())
-            return false;
+        if (!DataSaving::Initialize()) return false;
         return InitializeNetwork() && InitializeUser();
     }
 

@@ -32,6 +32,8 @@ struct UserConfig
 
 namespace Config
 {
+    extern bool networkInit = false;
+    extern bool userInit = false;
     extern NetworkConfig Network;
     extern UserConfig User; 
 
