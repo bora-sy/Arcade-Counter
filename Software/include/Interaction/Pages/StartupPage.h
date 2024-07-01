@@ -11,7 +11,7 @@ class StartupPage : public Page
 private:
 Label labelInfo;
 
-void ShowInfo(String info);
+void ShowInfo(String info, uint8_t textSize = 2);
 void ClearInfo();
 
 public:

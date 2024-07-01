@@ -26,9 +26,10 @@ namespace PagedView
 
   void SwitchToPage(Page *page)
   {
-
     if (currentPage == page)
+    {
       return;
+    }
 
     if (currentPage != nullptr)
       currentPage->OnExit();
@@ -37,8 +38,8 @@ namespace PagedView
       currentPage = nullptr;
     else
     {
-      page->OnLoad();
       currentPage = page;
+      page->OnLoad();
       page->DrawIfShown();
     }
   }
@@ -87,7 +88,10 @@ bool Page::IsShown()
 void Page::DrawIfShown()
 {
   if (!this->IsShown())
+  {
+    Serial.println("Not shown");
     return;
+  }
 
   Display::Clear(false);
 

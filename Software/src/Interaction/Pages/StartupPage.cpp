@@ -22,7 +22,7 @@ void StartupPage::OnLoad()
     if(status)
     {
         Serial.println("\nConnected to WiFi");
-        ShowInfo("Connected\n\nIP ADDRESS\n" + WiFi.localIP().toString());
+        ShowInfo("Connected\n\nIP ADDRESS\n" + WiFi.localIP().toString(), 1);
         delay(2000);
     }
     else
@@ -50,11 +50,12 @@ void StartupPage::Periodic()
     
 }
 
-void StartupPage::ShowInfo(String info)
+void StartupPage::ShowInfo(String info, uint8_t textSize)
 {
     this->ToggleAllVisible(false, false);
 
-    this->labelInfo.UpdateText(info);
+    this->labelInfo.UpdateTextSize(textSize, false);
+    this->labelInfo.UpdateText(info, false);
     this->labelInfo.SetVisible(true, false);
     this->DrawIfShown();
 }

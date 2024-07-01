@@ -16,8 +16,9 @@ void setup() {
 
   PagedView::Begin();
   Pages::Initialize();
+  
+  Pages::startupPage->Show();
 
-  Pages::mainPage->Show();
 }
 
 void loop() {
