@@ -2,6 +2,12 @@
 #include <ESP8266WiFi.h>
 #include "Config.h"
 
+const char* hostname = "arcadecounter.local";
+const char* ap_ssid = "ArcadeCounter";
+const char* ap_password = "hackclub";
+IPAddress IPAddr;
+bool hostnameSuc = false;
+
 void Disp(String text, uint8_t textSize = 2)
 {
     Pages::startupPage->ShowInfo(text, textSize);
@@ -13,23 +19,27 @@ void NoDisp()
 
 void SetupAP()
 {
-    const char* ssid = "ArcadeCounter";
-    const char* password = "hackclub";
 
     WiFi.mode(WIFI_AP);
-    WiFi.softAP(ssid, password);
-
+    WiFi.softAPConfig(IPAddress(192, 168, 1, 1), IPAddress(192, 168, 1, 1), IPAddress(255, 255, 255, 0));
+    WiFi.softAP(ap_ssid, ap_password);
+    hostnameSuc = WiFi.setHostname(hostname);
+    IPAddr = WiFi.softAPIP();
     Serial.println("Switched to AP Mode");
 
+    Disp("(AP Mode)\nWaiting for\nconnection...\n\nSSID: " + String(ap_ssid) + "\nPASSWORD: " + String(ap_password), 1);
 
-    
+    while(WiFi.softAPgetStationNum() == 0) delay(100);
+
+    Disp("STA\nConnected",2);
+    delay(2000);
 }
 
 void SetupSTA()
 {
     WiFi.mode(WIFI_STA);
     
-    wl_status_t status = WiFi.begin(Config::Network.SSID + String("a"), Config::Network.Password);
+    wl_status_t status = WiFi.begin(Config::Network.SSID, Config::Network.Password);
     String cnctowifi = "Connecting\nto WiFi";
     
     const char* dots[] = {"",".", "..", "..."};
@@ -47,14 +57,15 @@ void SetupSTA()
         Serial.print(".");
         Disp(cnctowifi + dots[doti++ % 4]);
         delay(500);
-        esp_yield();
         timeoutRemaining--;
     }
 
     if(status == WL_CONNECTED)
     {
+        hostnameSuc = WiFi.setHostname(hostname);
+        IPAddr = WiFi.localIP();
         Serial.println("\nConnected to WiFi");
-        Disp("Connected\n\nIP ADDR\n" + WiFi.localIP().toString(), 1);
+        Disp("Connected", 2);
         delay(4000);
     }
     else
@@ -67,6 +78,25 @@ void SetupSTA()
 
 }
 
+void SetupConfigServer()
+{
+    WebServer::Initialize();
+
+    if(!Config::networkInit || !Config::userInit)
+    {
+        Serial.printf("Hostname suc: %d", hostnameSuc);
+        Disp("-Missing Config-\n\nGo to\n\n" + String(hostname) + "\nor\nhttp://" + IPAddr.toString() + "/", 1);
+        while (true)
+        {
+            WebServer::Periodic();
+            yield();
+            esp_yield();
+        }
+    }
+
+
+}
+
 void Startup()
 {
       
@@ -76,6 +106,8 @@ void Startup()
 
     if(!Config::networkInit) SetupAP();
     else SetupSTA();
+
+    SetupConfigServer();
 }
 
 

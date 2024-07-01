@@ -5,6 +5,7 @@
 #include "Interaction/Components/Progressbar.h"
 #include "Interaction/Components/Bitmap.h"
 #include "Interaction/Bitmaps/Ticket.h"
+#include "ConfigServer/WebServer.h"
 
 class StartupPage : public Page
 {
