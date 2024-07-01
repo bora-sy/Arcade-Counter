@@ -11,14 +11,14 @@ class StartupPage : public Page
 private:
 Label labelInfo;
 
-void ShowInfo(String info, uint8_t textSize = 2);
-void ClearInfo();
-
 public:
     void OnLoad() override;
     void OnExit() override;
     void OnInput(BtnInput input) override;
     void Periodic() override;
+
+    void ShowInfo(String info, uint8_t textSize = 2);
+    void ClearInfo();
 
     StartupPage();
 };

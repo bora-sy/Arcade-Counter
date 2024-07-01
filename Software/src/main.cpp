@@ -7,15 +7,17 @@
 
 void setup() {
   Serial.begin(921600);
+  bool pvb = PagedView::Begin();
+  if(!pvb)
+  {
+    Serial.println("Display init failed");
+    delay(2000);
+    ESP.restart();
+    return;
+  }
 
-  Serial.println("Begin");
-  
-  Serial.printf("Config init suc: %d\n", Config::Initialize());
-  Serial.printf("Network: (SSID: %s) (PW: %s)\n", (char*)Config::Network.SSID, (char*)Config::Network.Password);
-  Serial.printf("User:    (SlackID: %s) (AirtableID: %s)\n", (char*)Config::User.SlackMemberID, (char*)Config::User.UserAirtableID);
-
-  PagedView::Begin();
   Pages::Initialize();
+  Serial.println("Begin");
   
   Pages::startupPage->Show();
 
