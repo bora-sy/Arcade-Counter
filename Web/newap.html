@@ -6,11 +6,10 @@
     <title>Arcade Counter Configuration</title>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Gaegu&family=Roboto&family=Slackey&display=swap');
 
         body {
             background-color: #faefd6;
-            font-family: 'Roboto', sans-serif;
+            font-family: Georgia, serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -173,24 +172,9 @@
                 <p>The password for the network SSID</p>
             </div>
         </div>
-
-        <div class="container">
-            <h2>User</h2>
-            <div class="group">
-                <label for="slack-id">Slack Member ID:
-                    <span class="help-icon" onclick="showHelp('help-slack.png')">?</span>
-                </label>
-                <input type="text" id="slack-id" name="slack-id">
-                <p>Your Slack Member ID (For Sessions)</p>
-
-                <label for="airtable-id">User Airtable ID:
-                    <span class="help-icon" onclick="showHelp('help-airtable.png')">?</span>
-                </label>
-                <input type="text" id="airtable-id" name="airtable-id">
-                <p>Your Airtable User ID (For Tickets)</p>
-            </div>
-        </div>
     </div>
+    
+    <p>User configuration can be made once the device connects to a WiFi Network</p>
 
     <div class="button-group">
         <button>Save & Restart</button>
