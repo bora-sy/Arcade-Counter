@@ -104,13 +104,18 @@ void Startup()
     // TODO: Fix hostname
       
     Serial.printf("Config init suc: %d\n", Config::Initialize());
+    DataSaving::DeleteFile(CONFIGFILE_NETWORK);
+    DataSaving::DeleteFile(CONFIGFILE_USER);
+    
     Serial.printf("Network: (SSID: %s) (PW: %s)\n", (char*)Config::Network.SSID, (char*)Config::Network.Password);
     Serial.printf("User:    (SlackID: %s) (AirtableID: %s)\n", (char*)Config::User.SlackMemberID, (char*)Config::User.UserAirtableID);
-
+    
     if(!Config::networkInit) SetupAP();
     else SetupSTA();
 
     SetupConfigServer();
+
+    Pages::mainPage->Show();
 }
 
 

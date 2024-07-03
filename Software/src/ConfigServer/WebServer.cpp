@@ -8,13 +8,36 @@ namespace WebServer
 
     void mainPage()
     {
-        server.send(200, "text/html", "<h1>Hello World</h1>");
+        WiFiMode_t mode = WiFi.getMode();
+
+        switch (mode)
+        {
+        case WiFiMode_t::WIFI_OFF:
+            server.send(200, "text/plain", "WiFi is off (somehow?)");
+            break;
+        case WiFiMode_t::WIFI_STA:
+            server.send(200, "html", (const char*)PAGE_STA);
+            break;
+
+        case WiFiMode_t::WIFI_AP:
+            server.send(200, "text/html", (const char*)PAGE_AP);
+            break;
+        
+        default:
+            server.send(200, "text/plain", "Something went wrong..");
+            break;
+        }
     }
 
     void SetNetworkConfig()
     {
         String ssid = server.arg("ssid");
         String password = server.arg("password");
+        
+        ssid.trim();
+        password.trim();
+
+        if(ssid == "" || password == ""){server.send(400, "text/plain", "0"); return;}
         
         bool suc = Config::SetNetwork(NetworkConfig(ssid.c_str(), password.c_str()));
         Serial.printf("Networkconfig set suc: %d\n", suc);
@@ -27,6 +50,11 @@ namespace WebServer
     {
         String slackID = server.arg("slackmemberid");
         String airtableID = server.arg("userairtableid");
+
+        slackID.trim();
+        airtableID.trim();
+
+        if(slackID == "" || airtableID == ""){server.send(400, "text/plain", "0"); return;}
         
         bool suc = Config::SetUser(UserConfig(slackID.c_str(), airtableID.c_str()));
         Serial.printf("Userconfig set suc: %d\n", suc);
