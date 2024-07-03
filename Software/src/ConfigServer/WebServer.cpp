@@ -25,7 +25,7 @@ namespace WebServer
 
     void SetUserConfig()
     {
-        String slackID = server.arg("slackid");
+        String slackID = server.arg("slackmemberid");
         String airtableID = server.arg("userairtableid");
         
         bool suc = Config::SetUser(UserConfig(slackID.c_str(), airtableID.c_str()));
