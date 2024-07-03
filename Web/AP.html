@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arcade Counter Configuration</title>
 
     <style>
-
         body {
             background-color: #faefd6;
             font-family: Georgia, serif;
@@ -80,7 +80,7 @@
             margin-bottom: 20px;
         }
 
-        p{
+        p {
             font-family: 'Gaegu', cursive;
             color: #af37ff;
             text-align: center;
@@ -148,7 +148,7 @@
             background-color: #076e6f;
         }
 
-        @media screen and (max-width: 800px){
+        @media screen and (max-width: 800px) {
             .content {
                 flex-direction: column;
             }
@@ -164,6 +164,7 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Arcade Counter Configuration</h1>
 
@@ -181,11 +182,11 @@
             </div>
         </div>
     </div>
-    
+
     <p>*User configuration can be made once the device connects to a WiFi Network*</p>
 
     <div class="button-group">
-        <button>Save & Restart</button>
+        <button onclick="SaveRestart()">Save & Restart</button>
     </div>
 
     <div id="modal" class="modal" onclick="closeModal()">
@@ -204,11 +205,80 @@
             document.getElementById('modal').style.display = 'none';
         }
 
-        document.getElementById('modal').addEventListener('click', function(event) {
+        document.getElementById('modal').addEventListener('click', function (event) {
             if (event.target.id === 'modal') {
                 closeModal();
             }
         });
     </script>
+
+
+    <script>
+        async function SendRequest(path, _method) {
+            const url = "http://127.0.0.1:8080" + path;
+
+            const options = {
+                method: _method
+            }
+
+            const resp = await fetch(url, options);
+
+            return resp;
+        }
+
+        async function GET(path) {
+            const resp = await SendRequest(path, "GET");
+            return resp.json();
+        }
+
+        async function POST(path) {
+            const resp = await SendRequest(path, "POST");
+            return resp.text();
+        }
+
+        async function SetNetwork(ssid, password) {
+            var ssid = document.getElementById('ssid').value;
+            var password = document.getElementById('password').value;
+
+            const resp = await POST(`/api/config/network?ssid=${ssid}&password=${password}`);
+
+            return resp === "1";
+        }
+
+        async function GetNetwork() {
+            const resp = await GET("/api/config/network");
+
+            return resp;
+        }
+
+        async function Restart() {
+            return await POST("/api/restart") === "ok";
+        }
+
+
+        async function SaveRestart() {
+            console.log("Save & Restart");
+            var ssid = document.getElementById('ssid').value;
+            var password = document.getElementById('password').value;
+
+            const netSuc = await SetNetwork(ssid, password);
+
+            const suc = true;
+
+            if(!netSuc){alert("Failed to set network configuration"); suc = false;}
+            if(!await Restart()){ alert("Failed to restart the device"); suc = false;}
+            
+            if(suc)
+            alert("Success");
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            const network = await GetNetwork();
+
+            document.getElementById('ssid').value = network.ssid;
+            document.getElementById('password').value = network.password;
+        });
+    </script>
 </body>
+
 </html>
