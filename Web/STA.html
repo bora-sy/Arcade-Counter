@@ -257,14 +257,14 @@
 
             const resp = await POST(`/api/config/network?ssid=${ssid}&password=${password}`);
 
-            return resp == "1";
+            return resp === "1";
         }
 
         async function SetUser(slack_id, airtable_id)
         {
             const resp = await POST(`/api/config/user?slackmemberid=${slack_id}&userairtableid=${airtable_id}`);
 
-            return resp == "1";
+            return resp === "1";
         }
 
         async function GetNetwork()
@@ -282,7 +282,7 @@
 
         async function Restart()
         {
-            await POST("/api/restart");
+            return await POST("/api/restart") === "ok"; 
         }
 
 
@@ -294,9 +294,17 @@
             var slack_id = document.getElementById('slack-id').value;
             var airtable_id = document.getElementById('airtable-id').value;
 
-            await SetNetwork(ssid, password);
-            await SetUser(slack_id, airtable_id);
-            await Restart();
+            const netSuc = await SetNetwork(ssid, password);
+            const userSuc = await SetUser(slack_id, airtable_id);
+            
+            const suc = true;
+
+            if(!netSuc){alert("Failed to set network configuration"); suc = false;}
+            if(!userSuc){ alert("Failed to set user configuration"); suc = false;}
+            if(!await Restart()){ alert("Failed to restart the device"); suc = false;}
+            
+            if(suc)
+            alert("Success");
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
