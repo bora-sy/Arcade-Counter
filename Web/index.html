@@ -196,7 +196,7 @@
     </div>
 
     <div class="button-group">
-        <button onclick="SaveRestart">Save & Restart</button>
+        <button onclick="SaveRestart()">Save & Restart</button>
     </div>
 
     <div id="modal" class="modal" onclick="closeModal()">
@@ -224,42 +224,90 @@
 
     <script>
 
-        async function SendRequest(url, method)
+        
+        async function SendRequest(path, _method)
         {
+            const url = "http://127.0.0.1:8080" + path;
+
             const options = {
-                method: 'POST'
+                method: _method
             }
+
             const resp = await fetch(url, options);
 
-            return 
+            return resp;
         }
 
-        function Restart()
+        async function GET(path)
         {
-            
+            const resp = await SendRequest(path, "GET");
+            return resp.json();
         }
 
-        function SetNetwork()
+        async function POST(path)
         {
+            const resp = await SendRequest(path, "POST");
+            return resp.text();
+        }
+
+        async function SetNetwork(ssid, password)
+        {
+            var ssid = document.getElementById('ssid').value;
+            var password = document.getElementById('password').value;
+
+            const resp = await POST(`/api/config/network?ssid=${ssid}&password=${password}`);
+
+            return resp == "1";
+        }
+
+        async function SetUser(slack_id, airtable_id)
+        {
+            const resp = await POST(`/api/config/user?slackmemberid=${slack_id}&userairtableid=${airtable_id}`);
+
+            return resp == "1";
+        }
+
+        async function GetNetwork()
+        {
+            const resp = await GET("/api/config/network");
+
+            return resp;
+        }
+        async function GetUser()
+        {
+            const resp = await GET("/api/config/user");
+
+            return resp;
+        }
+
+        async function Restart()
+        {
+            await POST("/api/restart");
+        }
+
+
+        async function SaveRestart()
+        {
+            console.log("Save & Restart");
             var ssid = document.getElementById('ssid').value;
             var password = document.getElementById('password').value;
             var slack_id = document.getElementById('slack-id').value;
             var airtable_id = document.getElementById('airtable-id').value;
 
-            var data = {
-                ssid: ssid,
-                password: password,
-                slack_id: slack_id,
-                airtable_id: airtable_id
-            };
-
+            await SetNetwork(ssid, password);
+            await SetUser(slack_id, airtable_id);
+            await Restart();
         }
 
+        document.addEventListener('DOMContentLoaded', async function() {
+            const network = await GetNetwork();
+            const user = await GetUser();
 
-        function SaveRestart()
-        {
-            SetNetwork();
-        }
+            document.getElementById('ssid').value = network.ssid;
+            document.getElementById('password').value = network.password;
+            document.getElementById('slack-id').value = user.slackmemberid;
+            document.getElementById('airtable-id').value = user.userairtableid;
+        });
 
     </script>
 </body>
