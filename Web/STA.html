@@ -227,11 +227,11 @@
         
         async function SendRequest(path, _method)
         {
-            const url = "http://127.0.0.1:8080" + path;
+            const url = path;
 
             const options = {
                 method: _method
-            }
+            };
 
             const resp = await fetch(url, options);
 
